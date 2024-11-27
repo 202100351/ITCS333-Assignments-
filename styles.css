@@ -1,24 +1,101 @@
+/* Custom Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7fb;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    margin: 20px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    font-size: 2.5em;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+p {
+    font-size: 1.2em;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+/* Table Styles */
 table {
     width: 100%;
     border-collapse: collapse;
+    margin-top: 20px;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
 th, td {
     padding: 12px;
     text-align: left;
+    border: 1px solid #ddd;
 }
 
 th {
-    background-color: #f0f0f0;
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
 }
 
-@media (max-width: 600px) {
-    table {
-        width: 100%;
-        overflow-x: auto;
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #e2e2e2;
+}
+
+table td {
+    font-size: 1.1em;
+    color: #333;
+}
+
+/* Responsive Table Design */
+@media (max-width: 768px) {
+    table, thead, tbody, th, td, tr {
         display: block;
     }
+
     th, td {
-        white-space: nowrap;
+        width: 100%;
+        display: block;
+        box-sizing: border-box;
     }
+
+    th {
+        background-color: #007bff;
+        color: white;
+    }
+
+    td {
+        border: none;
+        padding: 10px;
+    }
+
+    td::before {
+        content: attr(data-label);
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+        color: #333;
+    }
+}
+
+/* Table Data Labels for Smaller Screens */
+td[data-label]:before {
+    display: inline-block;
+    content: attr(data-label);
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #007bff;
 }
