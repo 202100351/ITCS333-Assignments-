@@ -1,72 +1,74 @@
 <?php
-// Define the API endpoint URL
-$URL = "https://data.gov.bh/api/explore/v2.1/catalog/datasets/01-statistics-of-students-nationalities_updated/records?where=colleges%20like%20%22IT%22%20AND%20the_programs%20like%20%22bachelor%22&limit=100";
+// API URL for retrieving UOB student data
+$api_url = 'https://data.gov.bh/api/explore/v2.1/catalog/datasets/01-statistics-of-students-nationalities_updated/records?where=colleges%20like%20%22IT%22%20AND%20the_programs%20like%20%22bachelor%22&limit=100';
 
-// Use file_get_contents to get the JSON data from the API
-$response = file_get_contents($URL);
+// Fetch the JSON data from the API
+$response = file_get_contents($api_url);
 
-// Check if the response was successfully retrieved
+// Check if the API request was successful
 if ($response === FALSE) {
-    die("Error retrieving data.");
+    die('Error occurred while fetching data from the API');
 }
 
-// Decode the JSON response into an associative array
-$result = json_decode($response, true);
+// Decode the JSON response into a PHP array
+$data = json_decode($response, true);
 
-// Check if the decoding was successful
-if ($result === NULL) {
-    die("Error decoding JSON.");
+// Check if data is available
+if (empty($data['records'])) {
+    die('No data available');
 }
-
-// Extract the data (under the 'results' key)
-$data = isset($result['results']) ? $result['results'] : [];
-
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UOB Students Nationalities</title>
-    <link href="https://unpkg.com/picocss@1.5.1/dist/pico.min.css" rel="stylesheet">
+    <title>UOB Student Nationality Data</title>
+    <!-- Link to the external CSS file -->
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <div class="container">
+        <h1>UOB Students Enrollment by Nationality</h1>
+        <p>Displaying student enrollment data for Bachelor programs at the College of IT.</p>
 
-    <h1>University of Bahrain - Students Enrollment by Nationality</h1>
+        <!-- Data Table -->
+        <table>
+            <thead>
+                <tr>
+                    <th>Year</th>
+                    <th>Semester</th>
+                    <th>Program</th>
+                    <th>Nationality</th>
+                    <th>College</th>
+                    <th>Number of Students</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                // Loop through the API data and display it in the table
+                foreach ($data['records'] as $record) {
+                    // Extract relevant fields from the record
+                    $year = $record['fields']['academic_year'];
+                    $semester = $record['fields']['semester'];
+                    $program = $record['fields']['the_programs'];
+                    $nationality = $record['fields']['nationality'];
+                    $college = $record['fields']['colleges'];
+                    $student_count = $record['fields']['number_of_students'];
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Nationality</th>
-                <th>Number of Students</th>
-                <th>Program</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            // Check if data exists
-            if (empty($data)) {
-                echo "<tr><td colspan='3'>No data available.</td></tr>";
-            } else {
-                // Iterate through the 'results' and display the data
-                foreach ($data as $record) {
-                    // Handle fields based on available data in the response
-                    $semester = $record['semester'] ?? 'N/A';
-                    $year = $record['year'] ?? 'N/A';
-                    $program = $record['the_programs'] ?? 'N/A';
-                    
-                    // Assuming you want to display this as an example, since "nationality" data is not in the sample
-                    echo "<tr>";
-                    echo "<td>" . htmlspecialchars($semester) . " (" . htmlspecialchars($year) . ")</td>";
-                    echo "<td>" . htmlspecialchars($program) . "</td>";
-                    echo "<td>" . htmlspecialchars($program) . "</td>"; // Using the program again as a placeholder for "nationality"
-                    echo "</tr>";
+                    // Display the record in the table
+                    echo "<tr>
+                            <td data-label='Year'>$year</td>
+                            <td data-label='Semester'>$semester</td>
+                            <td data-label='Program'>$program</td>
+                            <td data-label='Nationality'>$nationality</td>
+                            <td data-label='College'>$college</td>
+                            <td data-label='Number of Students'>$student_count</td>
+                          </tr>";
                 }
-            }
-            ?>
-        </tbody>
-    </table>
-
+                ?>
+            </tbody>
+        </table>
+    </div>
 </body>
 </html>
