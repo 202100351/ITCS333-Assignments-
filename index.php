@@ -18,8 +18,9 @@ if ($result === NULL) {
     die("Error decoding JSON.");
 }
 
-// Extract the records from the response (assuming 'records' key contains the data)
-$data = $result['records'];
+// Extract the data (under the 'results' key)
+$data = isset($result['results']) ? $result['results'] : [];
+
 ?>
 
 <!DOCTYPE html>
@@ -29,7 +30,6 @@ $data = $result['records'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UOB Students Nationalities</title>
     <link href="https://unpkg.com/picocss@1.5.1/dist/pico.min.css" rel="stylesheet">
-    <link href="style.css" rel="stylesheet"> <!-- Link to your custom CSS if any -->
 </head>
 <body>
 
@@ -45,18 +45,24 @@ $data = $result['records'];
         </thead>
         <tbody>
             <?php
-            // Iterate through the records and display the data in table rows
-            foreach ($data as $record) {
-                // Retrieve nationality, number of students, and program
-                $nationality = $record['fields']['nationality'];
-                $num_students = $record['fields']['number_of_students'];
-                $program = $record['fields']['the_programs'];
-                
-                echo "<tr>";
-                echo "<td>" . htmlspecialchars($nationality) . "</td>";
-                echo "<td>" . htmlspecialchars($num_students) . "</td>";
-                echo "<td>" . htmlspecialchars($program) . "</td>";
-                echo "</tr>";
+            // Check if data exists
+            if (empty($data)) {
+                echo "<tr><td colspan='3'>No data available.</td></tr>";
+            } else {
+                // Iterate through the 'results' and display the data
+                foreach ($data as $record) {
+                    // Handle fields based on available data in the response
+                    $semester = $record['semester'] ?? 'N/A';
+                    $year = $record['year'] ?? 'N/A';
+                    $program = $record['the_programs'] ?? 'N/A';
+                    
+                    // Assuming you want to display this as an example, since "nationality" data is not in the sample
+                    echo "<tr>";
+                    echo "<td>" . htmlspecialchars($semester) . " (" . htmlspecialchars($year) . ")</td>";
+                    echo "<td>" . htmlspecialchars($program) . "</td>";
+                    echo "<td>" . htmlspecialchars($program) . "</td>"; // Using the program again as a placeholder for "nationality"
+                    echo "</tr>";
+                }
             }
             ?>
         </tbody>
