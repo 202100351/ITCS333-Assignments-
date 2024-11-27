@@ -60,6 +60,39 @@ foreach ($data['results'] as $record) {
     <title>UOB Student Nationality Data</title>
     <!-- Link to the external CSS file -->
     <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Basic styling for the table */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f4f4f4;
+            color: #2a2a2a; /* Change this to your desired color */
+        }
+        td {
+            color: #333; /* Default text color for the table data */
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -92,12 +125,12 @@ foreach ($data['results'] as $record) {
 
                     // Display the record in the table
                     echo "<tr>
-                            <td data-label='Year'>$year</td>
-                            <td data-label='Semester'>$semester</td>
-                            <td data-label='Program'>$program</td>
-                            <td data-label='Nationality'>$nationality</td>
-                            <td data-label='College'>$college</td>
-                            <td data-label='Number of Students'>$student_count</td>
+                            <td>$year</td>
+                            <td>$semester</td>
+                            <td>$program</td>
+                            <td>$nationality</td>
+                            <td>$college</td>
+                            <td>$student_count</td>
                           </tr>";
                 }
                 ?>
