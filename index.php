@@ -2,8 +2,12 @@
 // API URL for retrieving UOB student data
 $api_url = 'https://data.gov.bh/api/explore/v2.1/catalog/datasets/01-statistics-of-students-nationalities_updated/records?where=colleges%20like%20%22IT%22%20AND%20the_programs%20like%20%22bachelor%22&limit=100';
 
-// Fetch the JSON data from the API
-$response = file_get_contents($api_url);
+// Use cURL to fetch data from the API
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $api_url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+$response = curl_exec($ch);
+curl_close($ch);
 
 // Check if the API request was successful
 if ($response === FALSE) {
@@ -13,9 +17,39 @@ if ($response === FALSE) {
 // Decode the JSON response into a PHP array
 $data = json_decode($response, true);
 
-// Check if data is available
-if (empty($data['records'])) {
+// Check if the 'results' key exists and contains data
+if (empty($data['results'])) {
     die('No data available');
+}
+
+// Array to hold grouped data
+$grouped_data = [];
+
+// Loop through the results and group data by year, semester, nationality, and program
+foreach ($data['results'] as $record) {
+    $year = $record['year'] ?? 'N/A';
+    $semester = $record['semester'] ?? 'N/A';
+    $program = $record['the_programs'] ?? 'N/A';
+    $nationality = $record['nationality'] ?? 'N/A';
+    $college = $record['colleges'] ?? 'N/A';
+    $student_count = $record['number_of_students'] ?? 0;
+
+    // Group data by year, semester, nationality, and program
+    $key = "$year|$semester|$nationality|$program";
+    
+    if (!isset($grouped_data[$key])) {
+        $grouped_data[$key] = [
+            'year' => $year,
+            'semester' => $semester,
+            'program' => $program,
+            'nationality' => $nationality,
+            'college' => $college,
+            'student_count' => 0
+        ];
+    }
+
+    // Add student count to the grouped data
+    $grouped_data[$key]['student_count'] += $student_count;
 }
 ?>
 <!DOCTYPE html>
@@ -46,15 +80,15 @@ if (empty($data['records'])) {
             </thead>
             <tbody>
                 <?php
-                // Loop through the API data and display it in the table
-                foreach ($data['records'] as $record) {
-                    // Extract relevant fields from the record
-                    $year = $record['fields']['academic_year'];
-                    $semester = $record['fields']['semester'];
-                    $program = $record['fields']['the_programs'];
-                    $nationality = $record['fields']['nationality'];
-                    $college = $record['fields']['colleges'];
-                    $student_count = $record['fields']['number_of_students'];
+                // Loop through the grouped data and display it in the table
+                foreach ($grouped_data as $data_row) {
+                    // Extract relevant fields from the grouped data
+                    $year = $data_row['year'];
+                    $semester = $data_row['semester'];
+                    $program = $data_row['program'];
+                    $nationality = $data_row['nationality'];
+                    $college = $data_row['college'];
+                    $student_count = $data_row['student_count'];
 
                     // Display the record in the table
                     echo "<tr>
