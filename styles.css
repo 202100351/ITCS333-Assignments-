@@ -1,4 +1,3 @@
-/* Custom Styles */
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f7fb;
@@ -60,7 +59,7 @@ table td {
     color: #333;
 }
 
-/* Responsive Table Design */
+
 @media (max-width: 768px) {
     table, thead, tbody, th, td, tr {
         display: block;
