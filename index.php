@@ -2,7 +2,7 @@
 // API URL for retrieving UOB student data
 $api_url = 'https://data.gov.bh/api/explore/v2.1/catalog/datasets/01-statistics-of-students-nationalities_updated/records?where=colleges%20like%20%22IT%22%20AND%20the_programs%20like%20%22bachelor%22&limit=100';
 
-// Use cURL to fetch data from the API
+// fetch data fom URL using cURL
 $ch = curl_init();
 curl_setopt($ch, CURLOPT_URL, $api_url);
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -14,7 +14,7 @@ if ($response === FALSE) {
     die('Error occurred while fetching data from the API');
 }
 
-// Decode the JSON response into a PHP array
+// Decode into PHP response from JSON 
 $data = json_decode($response, true);
 
 // Check if the 'results' key exists and contains data
@@ -22,10 +22,10 @@ if (empty($data['results'])) {
     die('No data available');
 }
 
-// Array to hold grouped data
+// Array for holding goruped data
 $grouped_data = [];
 
-// Loop through the results and group data by year, semester, nationality, and program
+// Loop through results 
 foreach ($data['results'] as $record) {
     $year = $record['year'] ?? 'N/A';
     $semester = $record['semester'] ?? 'N/A';
@@ -48,7 +48,7 @@ foreach ($data['results'] as $record) {
         ];
     }
 
-    // Add student count to the grouped data
+    // Add student count to grouped data
     $grouped_data[$key]['student_count'] += $student_count;
 }
 ?>
@@ -61,7 +61,7 @@ foreach ($data['results'] as $record) {
     <!-- Link to the external CSS file -->
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Basic styling for the table */
+        
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
@@ -80,10 +80,10 @@ foreach ($data['results'] as $record) {
         }
         th {
             background-color: #f4f4f4;
-            color: #2a2a2a; /* Change this to your desired color */
+            color: #2a2a2a; 
         }
         td {
-            color: #333; /* Default text color for the table data */
+            color: #333; 
         }
         tr:nth-child(even) {
             background-color: #f9f9f9;
@@ -113,9 +113,9 @@ foreach ($data['results'] as $record) {
             </thead>
             <tbody>
                 <?php
-                // Loop through the grouped data and display it in the table
+                // Loop through grouped data and display it in the table
                 foreach ($grouped_data as $data_row) {
-                    // Extract relevant fields from the grouped data
+                    // Extract fields from grouped data
                     $year = $data_row['year'];
                     $semester = $data_row['semester'];
                     $program = $data_row['program'];
