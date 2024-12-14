@@ -6,7 +6,7 @@ async function getData() {
             throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        populateTable(data.results); // Call to populate the table with the fetched data
+        populateTable(data.results); // Call to populate the table with the fetched data Call for table population with data that was fetched
     } catch (error) {
         console.error("Error fetching data:", error);
     }
